@@ -30,8 +30,9 @@ module.exports.register = async (req, res) => {
 
 module.exports.getAllCustomers = async (req, res) => {
     try {
+        console.log("hgdsajfhgdhfghdf");
         const getAllCustomers = await Customers.find({}).populate("address");
-        res.status(200).send({ message: "sucess", success: true })
+        res.status(200).send({ message: "sucess", success: true,data:getAllCustomers })
     } catch (error) {
         res.status(400).send(error)
     }
@@ -40,7 +41,7 @@ module.exports.getAllCustomers = async (req, res) => {
 module.exports.getCustomerById = async (req, res) => {
     try {
        const customerId = await Customers.findOne({ _id: req.params.id }).populate("address")
-        res.status(200).send({ message: "sucess", success: true })
+        res.status(200).send({ message: "sucess", success: true,data:customerId })
     } catch (error) {
         res.status(400).send(error)
     }

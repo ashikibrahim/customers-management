@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -17,7 +17,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 300,
+  width: 500,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -33,6 +33,7 @@ function ModalForm() {
   const [address, setAddress] = useState();
   const [country, setCountry] = useState();
   const [state, setState] = useState();
+  const [email, setEmail] = useState();
   const [city, setCity] = useState();
   const [zipcode, setZipcode] = useState();
   const [image, setImage] = useState();
@@ -41,18 +42,16 @@ function ModalForm() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   // api call
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    console.log(firstname);
     let formdata = new FormData();
     formdata.append("firstname", firstname);
     formdata.append("lastname", lastname);
     formdata.append("username", username);
     formdata.append("password", password);
+    formdata.append("email", email);
     formdata.append("address", address);
     formdata.append("country", country);
     formdata.append("state", state);
@@ -61,13 +60,18 @@ function ModalForm() {
     formdata.append("image", image);
 
     // formdata.append("image", image);
-    console.log(formdata, "hhhhhhhhhhh");
+    // console.log(formdata, "hhhhhhhhhhh");
     try {
+      // console.log(formdata);
       // dispatch(showLoading());
-      const response = await axios.post(`/register`, formdata);
-      console.log(response);
-      // dispatch(hideLoading());
+      const response = await axios.post(
+        `${BaseUrl}/api/customer/register`,
+        formdata
+      );
+      console.log(response.data.success);
+
       if (response.data.success) {
+        handleClose();
         toast.success(response.data.message);
       } else {
         toast.error(response.data.message);
@@ -81,27 +85,6 @@ function ModalForm() {
   // form hooks
 
   // tab function
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    console.log(value);
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -119,21 +102,12 @@ function ModalForm() {
       >
         <div>
           <Box sx={style}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab label="Login" sx={{ fontWeight: "bold" }} />
-                <Tab label="Profile" sx={{ fontWeight: "bold" }} />
-              </Tabs>
-            </Box>
             <form onSubmit={handleSubmitForm}>
-              <TabPanel value={value} index={0}>
-                <Typography sx={{ fontWeight: "bold" }}>
-                  Add User | Login Details{" "}
-                </Typography>
+              {/* <TabPanel value={value} index={0}> */}
+              <Typography sx={{ fontWeight: "bold" }}>
+                Add User | Login Details{" "}
+              </Typography>
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="First Name"
                   fullWidth
@@ -142,7 +116,7 @@ function ModalForm() {
                   type="text"
                   name="firstname"
                   variant="standard"
-                  sx={{ margin: "3px 0" }}
+                  sx={{ margin: "5px 0", marginRight: "20px" }}
                 />
 
                 <TextField
@@ -155,7 +129,9 @@ function ModalForm() {
                   variant="standard"
                   sx={{ margin: "5px 0" }}
                 />
+              </div>
 
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="User Name"
                   fullWidth
@@ -164,7 +140,7 @@ function ModalForm() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   variant="standard"
-                  sx={{ margin: "5px 0" }}
+                  sx={{ margin: "5px 0", marginRight: "20px" }}
                 />
 
                 <TextField
@@ -177,7 +153,9 @@ function ModalForm() {
                   variant="standard"
                   sx={{ margin: "5px 0" }}
                 />
+              </div>
 
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="Confirm Password"
                   fullWidth
@@ -185,52 +163,22 @@ function ModalForm() {
                   type="password"
                   name="password2"
                   variant="standard"
-                  sx={{ margin: "5px 0" }}
+                  sx={{ margin: "5px 0", marginRight: "20px" }}
                 />
+
                 <TextField
-                  label="image"
+                  label="Email"
                   fullWidth
-                  required
-                  type="file"
-                  name="image"
-                  onChange={(e) => setImage(e.target.files[0])}
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   variant="standard"
+                  required
                   sx={{ margin: "5px 0" }}
                 />
-                {/* <FormControl fullWidth sx={{ m: 1, width: "70ch" }}>
-                  <FormLabel htmlFor="outlined-adornment-amount">
-                    image
-                  </FormLabel>
-                  <InputLabel htmlFor="outlined-adornment-amount"></InputLabel>
-                  <OutlinedInput
-                    id="outlined-adornment-amount"
-                    label="Amount"
-                    type="file"
-                    name="image"
-                    onChange={(e) => setImage(e.target.files[0])}
-                  />
-                </FormControl> */}
-
-                <div style={{}}>
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="basic tabs example"
-                  >
-                    <Tab label="cancel" sx={{ fontWeight: "bold" }} />
-                    {/* <button> */}
-
-                    <Tab label="Proceed" sx={{ fontWeight: "bold" }} />
-                    {/* </button> */}
-                  </Tabs>
-                </div>
-              </TabPanel>
-            </form>
-            <form>
-              <TabPanel value={value} index={1}>
-                <Typography sx={{ fontWeight: "bold" }}>
-                  Add User | Profile Details{" "}
-                </Typography>
+              </div>
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="Addres Line"
                   fullWidth
@@ -240,7 +188,7 @@ function ModalForm() {
                   variant="standard"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  sx={{ margin: "5px 0" }}
+                  sx={{ margin: "5px 0", marginRight: "20px" }}
                 />
                 <TextField
                   label="Country"
@@ -255,6 +203,8 @@ function ModalForm() {
                   // onChange={(e) => setPassword(e.target.value)}
                   sx={{ margin: "5px 0" }}
                 />
+              </div>
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="State"
                   fullWidth
@@ -264,7 +214,7 @@ function ModalForm() {
                   value={state}
                   onChange={(e) => setState(e.target.value)}
                   required
-                  sx={{ margin: "5px 0" }}
+                  sx={{ margin: "5px 0", marginRight: "20px" }}
                 />
                 <TextField
                   label="City"
@@ -279,6 +229,8 @@ function ModalForm() {
                   // onChange={(e) => setPassword(e.target.value)}
                   sx={{ margin: "5px 0" }}
                 />
+              </div>
+              <div style={{ display: "flex" }}>
                 <TextField
                   label="Zip code"
                   fullWidth
@@ -290,33 +242,60 @@ function ModalForm() {
                   required
                   sx={{ margin: "5px 0" }}
                 />
-                <div style={{}}>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    sx={{
-                      borderRadius: "0px",
-                      fontWeight: "bold",
-                      margin: "20px",
-                    }}
-                  >
-                    <FaTimes />
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{
-                      borderRadius: "0px",
-                      fontWeight: "bold",
-                      marginLeft: "20px",
-                    }}
-                  >
-                    <FaRegBookmark />
-                    Save
-                  </Button>
-                </div>
-              </TabPanel>
+
+                <TextField
+                  label="image"
+                  fullWidth
+                  required
+                  type="file"
+                  name="image"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  variant="standard"
+                  sx={{ margin: "5px 0" }}
+                />
+              </div>
+
+              {/* <FormControl fullWidth sx={{ m: 1, width: "70ch" }}>
+                  <FormLabel htmlFor="outlined-adornment-amount">
+                    image
+                  </FormLabel>
+                  <InputLabel htmlFor="outlined-adornment-amount"></InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-amount"
+                    label="Amount"
+                    type="file"
+                    name="image"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                </FormControl> */}
+
+              <div style={{}}>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  sx={{
+                    borderRadius: "0px",
+                    fontWeight: "bold",
+                    margin: "20px",
+                  }}
+                >
+                  <FaTimes />
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    borderRadius: "0px",
+                    fontWeight: "bold",
+                    marginLeft: "20px",
+                  }}
+                >
+                  <FaRegBookmark />
+                  Save
+                </Button>
+              </div>
+              {/* </TabPanel> */}
             </form>
           </Box>
         </div>

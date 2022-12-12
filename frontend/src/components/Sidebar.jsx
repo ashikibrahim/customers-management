@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -9,8 +9,32 @@ import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import ModalForm from "../containers/ModalForm";
 import { FaSearch } from "react-icons/fa";
+import axios from "axios";
+import { BaseUrl } from "../Utils/BaseUrl";
+import {UserState} from '../context/userContext'
 
-function Sidebar() {
+
+
+function Sidebar({ props }) {
+const {user,setUser}=UserState()
+
+  let customersData=async (id)=>{
+    console.log(id);
+    try {
+      const response = await axios.get(
+        `${BaseUrl}/api/customer/get-customer-info-by-id/${id}`
+      );
+      if (response.data.success) {
+        
+        setUser(response?.data?.data);
+      }
+    } catch (error) {
+      
+      console.log(error, "catch error");
+    }
+  }
+console.log(user);
+
   return (
     <div>
       <Card sx={{ minHeight: "100vh", width: "350px" }}>
@@ -42,12 +66,15 @@ function Sidebar() {
               display: "flex",
               flexWrap: "wrap",
               "& > :not(style)": {
-                m: 1,
+                marginTop:"5px",
+                // m: 1,
                 width: 300,
                 height: 60,
               },
             }}
           >
+        {props?.map((customers)=>(
+
             <Paper elevation={3}>
               <div
                 style={{
@@ -55,14 +82,16 @@ function Sidebar() {
                   alignItems: "center",
                   padding: "5px",
                 }}
+                onClick={()=>customersData(customers._id)}
               >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={customers.image} />
                 <div style={{ marginLeft: "20px" }}>
-                  <Typography>customer1</Typography>
-                  <Typography>@gmail.com</Typography>
+                  <Typography>{customers.firstname}</Typography>
+                  <Typography>{customers.username}</Typography>
                 </div>
               </div>
             </Paper>
+        ))}
           </Box>
         </CardContent>
       </Card>

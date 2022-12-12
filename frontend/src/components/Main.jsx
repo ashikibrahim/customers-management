@@ -14,8 +14,26 @@ import {
   FaRegPaperPlane,
   FaPhoneAlt,
 } from "react-icons/fa";
+import { UserState } from "../context/userContext";
+import { BaseUrl } from "../Utils/BaseUrl";
+import axios from "axios";
 
 function Main() {
+  const { user, setUser } = UserState();
+  console.log(user);
+
+  const deleteData = async (id) => {
+    try {
+      console.log(id);
+      const response = await axios.delete(
+        `${BaseUrl}/api/customer/delete-customer/${id}`
+      );
+      if(response){
+        window.location.reload()
+      }
+    } catch (error) {}
+  };
+
   return (
     <Card
       sx={{
@@ -30,7 +48,7 @@ function Main() {
           <div>
             <Avatar
               alt="Remy Sharp"
-              src="https://images.unsplash.com/photo-1623366302587-b38b1ddaefd9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1450&q=80"
+              src={user.image}
               sx={{ width: 100, height: 100 }}
             />
           </div>
@@ -43,22 +61,24 @@ function Main() {
             }}
           >
             <div>
-              <Typography>Mathew Jones</Typography>
+              <Typography>
+                {user.firstname} {user.lastname}
+              </Typography>
             </div>
             <div style={{ display: "flex", paddingTop: "10px" }}>
               <div style={{ display: "flex" }}>
                 <FaUserAlt />
-                <Typography sx={{ marginLeft: "5px" }}>Matt2233</Typography>
-              </div>
-              <div style={{ display: "flex", marginLeft: "20px" }}>
-                <FaRegPaperPlane />
                 <Typography sx={{ marginLeft: "5px" }}>
-                  Matt@gmail.com
+                  {user.username}
                 </Typography>
               </div>
               <div style={{ display: "flex", marginLeft: "20px" }}>
-                <FaPhoneAlt />
-                <Typography sx={{ marginLeft: "5px" }}>9539773751</Typography>
+                <FaRegPaperPlane />
+                <Typography sx={{ marginLeft: "5px" }}>{user.email}</Typography>
+              </div>
+              <div style={{ display: "flex", marginLeft: "20px" }}>
+                {/* <FaPhoneAlt /> */}
+                {/* <Typography sx={{ marginLeft: "5px" }}>{}</Typography> */}
               </div>
             </div>
             <div style={{ marginTop: "30px" }}>
@@ -77,6 +97,7 @@ function Main() {
                   fontWeight: "bold",
                   marginLeft: "20px",
                 }}
+                onClick={() => deleteData(user._id)}
               >
                 <FaTrashAlt />
                 Delete
