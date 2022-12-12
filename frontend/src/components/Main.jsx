@@ -17,9 +17,12 @@ import {
 import { UserState } from "../context/userContext";
 import { BaseUrl } from "../Utils/BaseUrl";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 function Main() {
   const { user, setUser } = UserState();
+  const navigate = useNavigate()
   console.log(user);
 
   const deleteData = async (id) => {
@@ -85,6 +88,7 @@ function Main() {
               <Button
                 variant="outlined"
                 color="primary"
+                onClick={()=>navigate(`/edit-customer/${user._id}`)}
                 sx={{ borderRadius: "0px", fontWeight: "bold" }}
               >
                 <FaEdit /> Edit
@@ -136,9 +140,9 @@ function Main() {
                 backgroundColor: "#f7dbb0",
               }}
             >
-              <div style={{ marginLeft: "20px" }}>
-                <Typography>customer1</Typography>
-                <Typography>@gmail.com</Typography>
+              <div style={{ marginLeft: "20px"}}>
+                <Typography sx={{fontWeight:"bold"}}>First Name</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.firstname}</Typography>
               </div>
             </div>
           </Paper>
@@ -154,8 +158,8 @@ function Main() {
               }}
             >
               <div style={{ marginLeft: "20px" }}>
-                <Typography>customer1</Typography>
-                <Typography>@gmail.com</Typography>
+              <Typography sx={{fontWeight:"bold"}}>Last Name</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.lastname}</Typography>
               </div>
             </div>
           </Paper>
@@ -171,8 +175,8 @@ function Main() {
               }}
             >
               <div style={{ marginLeft: "20px" }}>
-                <Typography>customer1</Typography>
-                <Typography>@gmail.com</Typography>
+              <Typography sx={{fontWeight:"bold"}}>User Name</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.username}</Typography>
               </div>
             </div>
           </Paper>
@@ -188,8 +192,8 @@ function Main() {
               }}
             >
               <div style={{ marginLeft: "20px" }}>
-                <Typography>customer1</Typography>
-                <Typography>@gmail.com</Typography>
+              <Typography sx={{fontWeight:"bold"}}>Email</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.email}</Typography>
               </div>
             </div>
           </Paper>
@@ -217,8 +221,8 @@ function Main() {
                   backgroundColor: "#f7dbb0",
                 }}
               >
-                <Typography>Address line</Typography>
-                <Typography>142,Indiranagar,Bangalore</Typography>
+                <Typography sx={{fontWeight:"bold"}}>Address Line</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.address?.address}</Typography>
               </div>
             </div>
           </Paper>
@@ -232,8 +236,8 @@ function Main() {
                   backgroundColor: "#ffff",
                 }}
               >
-                <Typography>Landmark</Typography>
-                <Typography>Oreon mall</Typography>
+                 <Typography sx={{fontWeight:"bold"}}>City</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.address?.city}</Typography>
               </div>
             </div>
           </Paper>
@@ -247,8 +251,8 @@ function Main() {
                   backgroundColor: "#f7dbb0",
                 }}
               >
-                <Typography>City</Typography>
-                <Typography>Bangalore</Typography>
+               <Typography sx={{fontWeight:"bold"}}>State</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.address?.state}</Typography>
               </div>
             </div>
           </Paper>
@@ -262,8 +266,8 @@ function Main() {
                   backgroundColor: "#ffff",
                 }}
               >
-                <Typography>State</Typography>
-                <Typography>Karnataka</Typography>
+                <Typography sx={{fontWeight:"bold"}}>Country</Typography>
+                <Typography sx={{fontWeight:"bold"}}>{user?.address?.country}</Typography>
               </div>
             </div>
           </Paper>
