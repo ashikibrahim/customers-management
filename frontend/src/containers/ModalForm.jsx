@@ -5,9 +5,11 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
 import { TextField } from "@mui/material";
 import { FaRegPlusSquare, FaRegBookmark, FaTimes } from "react-icons/fa";
+import { BaseUrl } from "../Utils/BaseUrl";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 // modal style
 const style = {
@@ -24,8 +26,18 @@ const style = {
 function ModalForm() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
-  const [form, setForm] = useState();
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [address, setAddress] = useState();
+  const [country, setCountry] = useState();
+  const [state, setState] = useState();
+  const [city, setCity] = useState();
+  const [zipcode, setZipcode] = useState();
+  const [image, setImage] = useState();
 
+  console.log(firstname, "pppp");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -33,9 +45,46 @@ function ModalForm() {
     setValue(newValue);
   };
 
+  // api call
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    let formdata = new FormData();
+    formdata.append("firstname", firstname);
+    formdata.append("lastname", lastname);
+    formdata.append("username", username);
+    formdata.append("password", password);
+    formdata.append("address", address);
+    formdata.append("country", country);
+    formdata.append("state", state);
+    formdata.append("city", city);
+    formdata.append("zipcode", zipcode);
+    formdata.append("image", image);
+
+    // formdata.append("image", image);
+    console.log(formdata, "hhhhhhhhhhh");
+    try {
+      // dispatch(showLoading());
+      const response = await axios.post(`/register`, formdata);
+      console.log(response);
+      // dispatch(hideLoading());
+      if (response.data.success) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      // dispatch(hideLoading());
+      toast.error("something went wrong frontend");
+    }
+  };
+
+  // form hooks
+
   // tab function
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
+
+    console.log(value);
 
     return (
       <div
@@ -80,69 +129,88 @@ function ModalForm() {
                 <Tab label="Profile" sx={{ fontWeight: "bold" }} />
               </Tabs>
             </Box>
-            <TabPanel value={value} index={0}>
-              <Typography sx={{ fontWeight: "bold" }}>
-                Add User | Login Details{" "}
-              </Typography>
-              <form >
+            <form onSubmit={handleSubmitForm}>
+              <TabPanel value={value} index={0}>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Add User | Login Details{" "}
+                </Typography>
                 <TextField
                   label="First Name"
                   fullWidth
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
                   type="text"
                   name="firstname"
                   variant="standard"
-                  
-                  sx={{ margin: "5px 0" }}
+                  sx={{ margin: "3px 0" }}
                 />
-                
+
                 <TextField
                   label="Last Name"
                   fullWidth
                   type="text"
                   name="lastname"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
                   variant="standard"
-                  // value={formik.values.lastname}
-                  // onChange={formik.handleChange("lastname")}
-                  // onBlur={formik.handleBlur("lastname")}
                   sx={{ margin: "5px 0" }}
                 />
-               
+
                 <TextField
                   label="User Name"
                   fullWidth
                   type="text"
                   name="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   variant="standard"
-                  // value={formik.values.username}
-                  // onChange={formik.handleChange("username")}
-                  // onBlur={formik.handleBlur("username")}
                   sx={{ margin: "5px 0" }}
                 />
-                
+
                 <TextField
                   label="Password"
                   fullWidth
                   type="password"
                   name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   variant="standard"
-                  // value={formik.values.password}
-                  // onChange={formik.handleChange("password")}
-                  // onBlur={formik.handleBlur("password")}
                   sx={{ margin: "5px 0" }}
                 />
-                
+
                 <TextField
                   label="Confirm Password"
                   fullWidth
+                  required
                   type="password"
                   name="password2"
                   variant="standard"
-                  // value={formik.values.password2}
-                  // onChange={formik.handleChange("password2")}
-                  // onBlur={formik.handleBlur("password2")}
                   sx={{ margin: "5px 0" }}
                 />
-                
+                <TextField
+                  label="image"
+                  fullWidth
+                  required
+                  type="file"
+                  name="image"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  variant="standard"
+                  sx={{ margin: "5px 0" }}
+                />
+                {/* <FormControl fullWidth sx={{ m: 1, width: "70ch" }}>
+                  <FormLabel htmlFor="outlined-adornment-amount">
+                    image
+                  </FormLabel>
+                  <InputLabel htmlFor="outlined-adornment-amount"></InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-amount"
+                    label="Amount"
+                    type="file"
+                    name="image"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                </FormControl> */}
+
                 <div style={{}}>
                   <Tabs
                     value={value}
@@ -150,24 +218,28 @@ function ModalForm() {
                     aria-label="basic tabs example"
                   >
                     <Tab label="cancel" sx={{ fontWeight: "bold" }} />
+                    {/* <button> */}
+
                     <Tab label="Proceed" sx={{ fontWeight: "bold" }} />
+                    {/* </button> */}
                   </Tabs>
                 </div>
-              </form>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <Typography sx={{ fontWeight: "bold" }}>
-                Add User | Profile Details{" "}
-              </Typography>
-              <form>
+              </TabPanel>
+            </form>
+            <form>
+              <TabPanel value={value} index={1}>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  Add User | Profile Details{" "}
+                </Typography>
                 <TextField
                   label="Addres Line"
                   fullWidth
                   type="text"
                   name="address"
+                  required
                   variant="standard"
-                  // value={password}
-                  // onChange={(e) => setPassword(e.target.value)}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                   sx={{ margin: "5px 0" }}
                 />
                 <TextField
@@ -175,6 +247,9 @@ function ModalForm() {
                   fullWidth
                   type="text"
                   name="country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  required
                   variant="standard"
                   // value={password}
                   // onChange={(e) => setPassword(e.target.value)}
@@ -186,8 +261,9 @@ function ModalForm() {
                   type="text"
                   name="state"
                   variant="standard"
-                  // value={password}
-                  // onChange={(e) => setPassword(e.target.value)}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  required
                   sx={{ margin: "5px 0" }}
                 />
                 <TextField
@@ -196,6 +272,9 @@ function ModalForm() {
                   type="text"
                   name="city"
                   variant="standard"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
                   // value={password}
                   // onChange={(e) => setPassword(e.target.value)}
                   sx={{ margin: "5px 0" }}
@@ -205,9 +284,10 @@ function ModalForm() {
                   fullWidth
                   type="number"
                   name="zipcode"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
                   variant="standard"
-                  // value={password}
-                  // onChange={(e) => setPassword(e.target.value)}
+                  required
                   sx={{ margin: "5px 0" }}
                 />
                 <div style={{}}>
@@ -224,6 +304,7 @@ function ModalForm() {
                     Cancel
                   </Button>
                   <Button
+                    type="submit"
                     variant="contained"
                     sx={{
                       borderRadius: "0px",
@@ -235,8 +316,8 @@ function ModalForm() {
                     Save
                   </Button>
                 </div>
-              </form>
-            </TabPanel>
+              </TabPanel>
+            </form>
           </Box>
         </div>
       </Modal>
