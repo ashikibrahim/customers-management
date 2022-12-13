@@ -244,6 +244,7 @@ function ModalForm() {
                     fontWeight: "bold",
                     margin: "20px",
                   }}
+                  onClick={handleClose}
                 >
                   <FaTimes />
                   Cancel
