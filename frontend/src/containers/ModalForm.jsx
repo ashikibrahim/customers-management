@@ -61,7 +61,6 @@ function ModalForm() {
         `${BaseUrl}/api/customer/register`,
         formdata
       );
-      console.log(response.data.success);
 
       if (response.data.success) {
         handleClose();

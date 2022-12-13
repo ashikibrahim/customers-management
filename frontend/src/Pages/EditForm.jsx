@@ -56,7 +56,6 @@ function EditForm() {
       }
     } catch (error) {
       toast.error("something went wrong no response");
-      console.log(error, "catch error");
     }
   };
 
